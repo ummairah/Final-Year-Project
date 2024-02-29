@@ -90,8 +90,10 @@
     <br>
     <div class="container col-12 border rounded mt-6 bg-body-tertiary">
       <br>
-      <h2 class="text-center" margin-top: 15px;"> Booking History </h2>
+      <h2 class="text-center"> Booking History </h2>
       <br>
+
+      <!-- for booking section -->
       <table class="table table-bordered align-middle mb-0 bg-whipte text-center">
         <thead class="bg-success">
           <tr>
@@ -101,10 +103,9 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-
         <?php
         $user_id = $_SESSION['id'];
-        $query = "SELECT * FROM  booking WHERE user_id = '$user_id' ORDER BY date DESC";
+        $query = "SELECT * FROM  booking WHERE user_id = '$user_id' AND (status = 'pending' OR status = 'completed' OR status = 'canceled') ORDER BY date DESC";
         $result = mysqli_query($connect, $query);
 
         while ($row = mysqli_fetch_array($result)) {
@@ -115,7 +116,6 @@
           $total_row = mysqli_fetch_assoc($total_result);
           $total = $total_row['total'];
         ?>
-
           <tbody>
             <tr>
               <!-- <th scope="row"> <?php echo $row['user_id']; ?> </th> -->
@@ -132,36 +132,108 @@
                 </span>
               </td>
               <td>
+                <!-- PENDING -->
                 <?php if ($row['status'] == 'pending') { ?>
-                  <!-- Enable Pay button, Disable Complain button, Enable Cancel button -->
-                  <a href="payment-form.php?booking_id=<?php echo $row['booking_id']; ?>&total=<?php echo $total; ?>">
-                    <button type="button" class="btn btn-outline-success" data-toggle="modal"> Pay </button>
-                  </a>
-                  <button type="button" class="btn btn-outline-primary" data-toggle="modal" disabled> Complain </button>
+                  <?php
+                  // Check if payment has been made for this booking
+                  $checkPaymentQuery = "SELECT * FROM payment WHERE booking_id = '{$row['booking_id']}'";
+                  $checkPaymentResult = mysqli_query($connect, $checkPaymentQuery);
+
+                  if (mysqli_num_rows($checkPaymentResult) > 0) {
+                    // Payment has been made
+                  ?>
+                    <button type="button" class="btn btn-success" disabled> Paid </button>
+                  <?php } else { ?>
+                    <!-- Payment not made, display "Pay" button -->
+                    <a href="payment-form.php?booking_id=<?php echo $row['booking_id']; ?>&total=<?php echo $total; ?>">
+                      <button type="button" class="btn btn-outline-success" data-toggle="modal"> Pay </button>
+                    </a>
+                  <?php } ?>
+
+                  <!-- <button type="button" class="btn btn-outline-primary" data-toggle="modal" disabled> Complain </button> -->
+
                   <!-- Cancel -->
-                  <a href="cancel-booking.php?booking_id=<?php echo $row['booking_id']; ?>" style="text-decoration: none;">
+                  <a href="cancel_booking.php?booking_id=<?php echo $row['booking_id']; ?>" style="text-decoration: none;">
                     <button type="button" class="btn btn-outline-danger cancel-btn"> Cancel </button>
                   </a>
+
+                  <!-- COMPLETED -->
                 <?php } elseif ($row['status'] == 'completed') { ?>
-                  <!-- Disable Pay button, Enable Complain button -->
-                  <button type="button" class="btn btn-outline-success" data-toggle="modal" disabled> Pay </button>
                   <a href="user_complain.php?id=<?php echo $row['user_id']; ?>" style="text-decoration: none;">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal"> Complain </button>
                   </a>
-                <?php } else { ?>
-                  <!-- Default: Disable both buttons -->
-                  <button type="button" class="btn btn-outline-success" data-toggle="modal" disabled> Pay </button>
-                  <button type="button" class="btn btn-outline-primary" data-toggle="modal" disabled> Complain </button>
+
+                  <!-- Add "Print" button -->
+                  <a href="print_test.php?id=<?php echo $booking_id; ?>">
+                    <button type="button" class="btn btn-outline-info"> Print </button>
+                  </a>
+
+                  <!-- CANCELED -->
+                <?php } elseif ($row['status'] == 'canceled') { ?>
+                  <!-- Display "Complain" button for canceled bookings -->
+                  <a href="user_complain.php?id=<?php echo $row['user_id']; ?>" style="text-decoration: none;">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal"> Complain </button>
+                  </a>
                 <?php } ?>
               </td>
+
             </tr>
           </tbody>
         <?php } ?>
+
+        <!-- for past booking section -->
+      </table>
+      <br>
+      <h2 class="text-center"> Past Booking </h2>
+      <br>
+      <table class="table table-bordered align-middle mb-0 bg-whipte text-center">
+        <thead class="bg-success">
+          <tr>
+            <th scope="col">Place</th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+
+          <?php
+          $user_id = $_SESSION['id'];
+          $query = "SELECT * FROM  canceled_book WHERE user_id = '$user_id' AND (status = 'canceled') ORDER BY date DESC";
+          $result = mysqli_query($connect, $query);
+
+          while ($row = mysqli_fetch_array($result)) {
+          ?>
+
+        <tbody>
+          <tr>
+            <!-- <th scope="row"> <?php echo $row['user_id']; ?> </th> -->
+            <td> <?php echo $row['place']; ?> </td>
+            <td> <?php echo $row['date']; ?> </td>
+            <td>
+              <?php
+              $statusColor = getStatusColor($row['status']);
+
+              $badgeClass = ($row['status'] == 'completed') ? 'badge-success' : (($row['status'] == 'pending') ? 'badge-warning' : 'badge-danger');
+              ?>
+              <span class="badge badge-pill <?php echo $badgeClass; ?> opacity-75" style="background-color: <?php echo $statusColor; ?>; border-radius: 50px; padding: 4px 4px; color: white;">
+                <?php echo $row['status']; ?>
+              </span>
+            </td>
+            <!-- // Assuming this is inside a loop displaying booking history -->
+            <td>
+              <?php if ($row['status'] == 'canceled') { ?>
+                <a href="user_complain.php?id=<?php echo $row['user_id']; ?>" style="text-decoration: none;">
+                  <button type="button" class="btn btn-outline-primary" data-toggle="modal"> Complain </button>
+                </a>
+              <?php } ?>
+            </td>
+          </tr>
+        </tbody>
+      <?php } ?>
+      </thead>
       </table>
       <br>
     </div>
   </body>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const cancelBtns = document.querySelectorAll('.cancel-btn');

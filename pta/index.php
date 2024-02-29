@@ -2,10 +2,10 @@
 
 <html>
 
-<body class="bg-body-tertiary">
+<body style="background-color: #f0f0f0;" class="bg-body-tertiary">
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-light">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg" style="background-color: #c8e6c9;">
+            <div class="container">
             <a class="navbar-brand" href="index.php"><img src="icon/logo_new.ico" alt="" width="140" height="120"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -76,7 +76,8 @@
         <div class="card text-center">
             <img src="images/services_carpet.jpg" class="card-img-top" alt="...">
             <div class="card-body">
-                <h5 class="card-title">Carpet</h5>
+                <h4 class="card-title">Carpet</h4>
+                <h5 class="card-title">RM0.25 per sqft</h5>
                 <p class="card-text text-justify">Inviron offers professional carpet cleaning services starting as low as RM 0.25 per square foot, providing an affordable solution for maintaining pristine and hygienic carpets.</p>
             </div>
         </div>

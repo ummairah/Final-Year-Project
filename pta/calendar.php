@@ -6,16 +6,16 @@ if (!isset($_SESSION['id'])) {
     header('Location: login_user.php'); // Redirect to the login page if not authenticated
     exit();
 }
-?>
 
-<?php
+$user_id = $_SESSION['id'];
+$query = "SELECT * FROM booking WHERE user_id = '$user_id' AND status != 'Canceled' ORDER BY date DESC";
+$result = mysqli_query($connect, $query);
+
 if (isset($_POST['signout'])) {
     session_destroy();
     header('location:index.php');
 }
-?>
 
-<?php
 function build_calendar($month, $year)
 {
     $mysqli = new mysqli('localhost', 'root', '', 'inviron');
@@ -62,11 +62,11 @@ function build_calendar($month, $year)
 
     $calendar = "<table class='table table-bordered'>";
     $calendar .= "<center><h2>$monthName $year</h2>";
-    $calendar .= "<a class='btn btn-sm btn-primary' href='?month=" . date('m', mktime(0, 0, 0, $month - 1, 1, $year)) . "&year=" . date('Y', mktime(0, 0, 0, $month - 1, 1, $year)) . "'>Previous Month</a> ";
+    $calendar .= "<a class='btn btn-sm btn-warning' href='?month=" . date('m', mktime(0, 0, 0, $month - 1, 1, $year)) . "&year=" . date('Y', mktime(0, 0, 0, $month - 1, 1, $year)) . "'>Previous Month</a> ";
 
     $calendar .= " <a class='btn btn-sm btn-primary' href='?month=" . date('m') . "&year=" . date('Y') . "'>Current Month</a> ";
 
-    $calendar .= "<a class='btn btn-sm btn-primary' href='?month=" . date('m', mktime(0, 0, 0, $month + 1, 1, $year)) . "&year=" . date('Y', mktime(0, 0, 0, $month + 1, 1, $year)) . "'>Next Month</a></center><br>";
+    $calendar .= "<a class='btn btn-sm btn-success' href='?month=" . date('m', mktime(0, 0, 0, $month + 1, 1, $year)) . "&year=" . date('Y', mktime(0, 0, 0, $month + 1, 1, $year)) . "'>Next Month</a></center><br>";
 
 
 
