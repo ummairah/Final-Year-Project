@@ -38,6 +38,33 @@ if (!empty($booking_id)) {
     echo "Booking ID is not provided.";
 }
 
+// Check if the form is submitted
+if (isset($_POST['update'])) {
+    $booking_id = $_POST['booking_id'];
+    $name = $_POST['name'];
+    $place = $_POST['place'];
+    $email = $_POST['email'];
+    $address = $_POST['address'];
+    $pic = $_POST['pic'];
+    $phone = $_POST['phone'];
+    $type = $_POST['type'];
+    $quantity = $_POST['quantity'];
+    $date = $_POST['date'];  // Retrieve the date value
+
+    // Use prepared statement to prevent SQL injection
+    $updateQuery = $connect->prepare("UPDATE booking SET name=?, place=?, email=?, address=?, pic=?, phone=?, type=?, quantity=?, date=? WHERE id=?");
+    $updateQuery->bind_param('sssssssssi', $name, $place, $email, $address, $pic, $phone, $type, $quantity, $date, $booking_id);
+
+    // Execute the update query
+    if ($updateQuery->execute()) {
+        // Alert box using JavaScript
+        echo '<script>alert("Booking updated successfully!");</script>';
+        header('location: view_book.php?id=' . $booking_id);
+        exit;  // Terminate script after redirect
+    } else {
+        echo "Update Unsuccessful: " . $updateQuery->error;
+    }
+}
 
 if (isset($_POST['reply'])) {
     $complaint_id = $_POST['complaint_id'];
@@ -84,24 +111,24 @@ if (isset($_POST['reply'])) {
                     <span>Booking</span>
                 </a>
             </li>
-            <li >
+            <li>
                 <a href="admin_complain.php?id=<?php echo $_SESSION['idadmin']; ?>">
                     <i class='bx bx-list-ul'></i>
                     <span>Complain</span>
                 </a>
             </li>
             <li class="active">
-                <a href="https://toyyibpay.com/index.php/bill">
+                <a href="admin_payment.php?id=<?php echo $_SESSION['idadmin']; ?>"">
                     <i class='bx bx-credit-card'></i>
                     <span>Payment</span>
                 </a>
             </li>
 
-            <li class="logout">
-                <a name="signout">
-                    <i class='bx bx-log-out'></i>
-                    <span>Log Out</span>
-                </a>
+            <li class=" logout">
+                    <a href="logout.php">
+                        <i class='bx bx-log-out'></i>
+                        <span>Log Out</span>
+                    </a>
             </li>
         </ul>
     </div>
@@ -110,16 +137,14 @@ if (isset($_POST['reply'])) {
     <!-- MAIN -->
     <div class="main--content">
         <div class="card-container">
-            <h3 class="main--title"> Customer Complain</h3>
+            <h3 class="main--title"> Customer Payment</h3>
             <br>
             <table>
                 <thead>
                     <tr>
-                        <th scope="col"> Name </th>
-                        <th scope="col"> Total Price </th>
-                        <th scope="col"> E-Mail </th>
-                        <th scope="col"> Phone Number </th>
-                        <th scope="col"> Booking ID </th>
+                        <th scope="col"> ID </th>
+                        <th scope="col"> Date Cleaning </th>
+                        <th scope="col"> Prove </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,22 +154,20 @@ if (isset($_POST['reply'])) {
                     while ($fetch = mysqli_fetch_array($result2)) {
                     ?>
                         <tr>
-                            <td> <?php echo $fetch['buyername']; ?> </td>
-                            <td> <?php echo $fetch['totalprice']; ?> </td>
-                            <td> <?php echo $fetch['buyeremail']; ?> </td>
-                            <td> <?php echo $fetch['phoneno']; ?> </td>
-                            <td> <?php echo $fetch['booking_booking_id']; ?> </td>
-                            <!-- <td><img src="./image/<?php echo $fetch['comp_img'] ?>" width=200px alt=""></td> -->
-                            <!-- <td>
- 
-                            </td> -->
+                            <td> <?php echo $fetch['booking_id']; ?> </td>
+                            <td> <?php echo $fetch['date']; ?> </td>
+                            <td>
+                                <!-- Anchor tag to make the file or image clickable -->
+                                <a href="./prove_payment/<?php echo $fetch['prove']; ?>" target="_blank">
+                                    <!-- Displaying the file name or any other relevant information -->
+                                    <?php echo $fetch['prove']; ?>
+                                </a>
+                            </td>
                         </tr>
                     <?php } ?>
                 </tbody>
-
             </table>
         </div>
     </div>
 </body>
-
 </html>

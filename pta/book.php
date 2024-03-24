@@ -1,8 +1,6 @@
 <?php include "config.php" ?>
 <?php session_start() ?>
-
 <?php
-
 if (isset($_GET['date'])) {
     $date = $_GET['date'];
 }
@@ -69,11 +67,25 @@ if (isset($_POST['submit'])) {
 
 <!doctype html>
 <html lang="en">
-
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
     <link rel="stylesheet" href="/css/main.css">
+
+    <style>
+        .form-check-label {
+            display: flex;
+            /* Use flexbox to align items */
+            align-items: center;
+            /* Align items vertically */
+        }
+
+        .price {
+            margin-left: 10px;
+            color: seagreen;
+            font-size: smaller;
+            /* Add spacing between the radio button and the price */
+        }
+    </style>
 </head>
 
 <body>
@@ -118,27 +130,31 @@ if (isset($_POST['submit'])) {
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Type Of Cleaning </label>
                         <div class="form-check">
-                            <label>
+                            <label class="form-check-label">
                                 <input class="form-check-input" type="radio" name="type" value="Carpet"> Carpet
+                                <span class="price">(RM 0.25 Per sqft [make sure to measure your carpet correctly])</span>
                             </label>
                         </div>
 
                         <div class="form-check">
-                            <label>
-                                <input class="form-check-input" type="radio" name="type" value="Sofa">Sofa
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="type" value="Sofa"> Sofa
+                                <span class="price">(RM 120 Per unit)</span>
                             </label>
                         </div>
 
                         <div class="form-check">
-                            <label>
+                            <label class="form-check-label">
                                 <input class="form-check-input" type="radio" name="type" value="Office Chair">Office Chair
+                                <span class="price">(RM 20 Per unit)</span>
                             </label>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Quantity </label>
-                        <input type="number" class="form-control" name="quantity">
+                        <input type="number" step="any" class="form-control" name="quantity">
+                        <p style="color: seagreen; font-size: smaller;"> For "Carpet", please enter SQFT measurement </p>
                     </div>
                     <center>
                         <button class="btn btn-success" type="submit" name="submit">Submit</button>
@@ -150,4 +166,5 @@ if (isset($_POST['submit'])) {
     </div>
     <br><br>
 </body>
+
 </html>

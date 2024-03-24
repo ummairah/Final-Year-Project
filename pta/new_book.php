@@ -45,6 +45,13 @@ if (isset($_POST['add'])) {
 
     $mysqli = new mysqli('localhost', 'root', '', 'inviron');
 
+    // Check if the booking is added by an admin
+    if ($admin_id !== null) {
+        // If added by admin, set user_id to null and use a placeholder value for admin_id
+        $user_id = null;
+        $admin_id = 0; // Placeholder value for admin_id
+    }
+
     $query = $mysqli->prepare("INSERT INTO booking (user_id, admin_id, name, place, email, address, pic, phone, type, quantity, total, date, status) VALUES (?, ?, ?, ?,?,?,?,?,?,?,?,?,?)");
 
     $status = 'pending';
@@ -60,31 +67,7 @@ if (isset($_POST['add'])) {
         echo '<script>window.location = "booking.php";</script>';
     }
 }
-
-function calculateTotal($type, $quantity)
-{
-    // Default rate values
-    $carpetRatePerSqft = 0.25; // Change this value according to your pricing for carpet
-    $sofaRatePerUnit = 15; // Change this value according to your pricing for sofa
-    $officeChairRatePerUnit = 12; // Change this value according to your pricing for office chair
-
-    // Convert type to lowercase for case-insensitive comparison
-    $type = strtolower($type);
-
-    // Calculate total based on cleaning type
-    switch ($type) {
-        case 'carpet':
-            return $quantity * $carpetRatePerSqft;
-        case 'sofa':
-            return $quantity * $sofaRatePerUnit;
-        case 'office chair':
-            return $quantity * $officeChairRatePerUnit;
-        default:
-            return 0; // Set a default value or handle it according to your needs
-    }
-}
 ?>
-
 
 <html>
 
@@ -93,7 +76,6 @@ function calculateTotal($type, $quantity)
     <!-- boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
-
 
 <body>
     <!-- SIDEBR -->
@@ -122,12 +104,6 @@ function calculateTotal($type, $quantity)
                 <a href="admin_payment.php?id=<?php echo $_SESSION['idadmin']; ?>">
                     <i class='bx bx-credit-card'></i>
                     <span>Payment</span>
-                </a>
-            </li>
-            <li>
-                <a href="profile.php?id=<?php echo $_SESSION['idadmin']; ?>">
-                    <i class='bx bx-user'></i>
-                    <span>Profile</span>
                 </a>
             </li>
             <li class="logout">

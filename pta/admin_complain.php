@@ -111,24 +111,19 @@ if (isset($_POST['reply'])) {
                     <span>Booking</span>
                 </a>
             </li>
-            <li class="active">
+            <li class="active" >
                 <a href="admin_complain.php?id=<?php echo $_SESSION['idadmin']; ?>">
                     <i class='bx bx-list-ul'></i>
                     <span>Complain</span>
                 </a>
             </li>
-            <li>
-                <a href="https://toyyibpay.com/index.php/bill">
+            <li >
+                <a href="admin_payment.php?id=<?php echo $_SESSION['idadmin']; ?>"">
                     <i class='bx bx-credit-card'></i>
                     <span>Payment</span>
                 </a>
             </li>
-            <!-- <li>
-                <a href="profile.php?id=<?php echo $_SESSION['idadmin']; ?>">
-                    <i class='bx bx-user'></i>
-                    <span>Profile</span>
-                </a>
-            </li> -->
+
             <li class="logout">
             <a href="logout.php">
                     <i class='bx bx-log-out'></i>

@@ -178,7 +178,7 @@ if (isset($_POST['signout'])) {
 
         <br>
         <div class="card-container">
-            <h3 class="main--title"> Decline Cleaning </h3>
+            <h3 class="main--title"> Canceled Cleaning </h3>
             <br>
             <table>
                 <thead>
@@ -195,7 +195,7 @@ if (isset($_POST['signout'])) {
                 </thead>
                 <tbody>
                     <?php
-                    $query = "SELECT * FROM  booking WHERE status = 'declined' ";
+                    $query = "SELECT * FROM  booking WHERE status = 'canceled' ";
                     $result = mysqli_query($connect, $query);
                     while ($row = mysqli_fetch_array($result)) {
                     ?>
@@ -213,8 +213,11 @@ if (isset($_POST['signout'])) {
                                 <a href="view_book.php?id=<?php echo $row['booking_id']; ?>">
                                     <button type="button" class="btn btn-primary">View</button>
                                 </a>
+                                <a href=".php?id=<?php echo $row['booking_id']; ?>">
+                                    <button type="button" class="btn btn-danger">Delete</button>
+                                </a>
                             </td>
-                            <!-- ... other table elements ... -->
+
                         </tr>
                     <?php } ?>
                 </tbody>

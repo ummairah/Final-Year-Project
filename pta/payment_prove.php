@@ -15,18 +15,14 @@ $bookingId = ''; // Initialize $bookingId
 $bookingDate = ''; // Initialize $bookingDate
 
 if (isset($_POST['btn_img'])) {
-    $complaintText = $_POST['complain'];
     $userId = $_SESSION['id'];
 
     // Retrieve booking data based on the user ID
-    $bookingQuery = "SELECT user_id, date FROM booking WHERE user_id = ?";
-    $bookingStmt = $connect->prepare($bookingQuery);
-    $bookingStmt->bind_param("i", $userId);
-    $bookingStmt->execute();
-    $bookingResult = $bookingStmt->get_result();
+    $bookingQuery = "SELECT booking_id, date FROM booking WHERE user_id = '$userId'";
+    $bookingResult = mysqli_query($connect, $bookingQuery);
 
-    if ($bookingRow = $bookingResult->fetch_assoc()) {
-        $bookingId = $bookingRow['user_id']; // Use 'user_id' instead of 'id'
+    if ($bookingRow = mysqli_fetch_assoc($bookingResult)) {
+        $bookingId = $bookingRow['booking_id']; // Use 'user_id' instead of 'id'
         $bookingDate = $bookingRow['date'];
 
         $date_comp = date("Y-m-d");
@@ -34,7 +30,7 @@ if (isset($_POST['btn_img'])) {
         // Handle image upload
         $filename = $_FILES["comp_img"]["name"];
         $tempfile = $_FILES["comp_img"]["tmp_name"];
-        $destinationDirectory = 'image/';
+        $destinationDirectory = 'prove_payment/';
         $folder = $destinationDirectory . $filename;
 
         // Create the directory if it doesn't exist
@@ -44,15 +40,15 @@ if (isset($_POST['btn_img'])) {
 
         move_uploaded_file($tempfile, $folder);
 
-        // Insert data into the complaint table using prepared statement
-        $insertQuery = "INSERT INTO complaint (user_id, date, complain, comp_img) VALUES (?, ?, ?, ?)";
-        $insertStmt = $connect->prepare($insertQuery);
-        $insertStmt->bind_param("isss", $bookingId, $bookingDate, $complaintText, $filename);
+        // Insert data into the complaint table
+        $insertQuery = "INSERT INTO payment (booking_id, date, prove) VALUES ('$bookingId', '$bookingDate', '$filename')";
 
         if ($filename == "") {
             echo "<div class='alert alert-danger' role='alert'><h4 class='text-center'>Blank not Allowed</h4></div>";
         } else {
-            if ($insertStmt->execute()) {
+            $result = mysqli_query($connect, $insertQuery);
+
+            if ($result) {
                 move_uploaded_file($tempfile, $folder);
                 echo "<div class='alert alert-success' role='alert'><h4 class='text-center'>Image uploaded</h4></div>";
             } else {
@@ -64,7 +60,6 @@ if (isset($_POST['btn_img'])) {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +76,7 @@ if (isset($_POST['btn_img'])) {
         <br>
         <a href="view_user.php?id=<?php echo $user_id = $_SESSION['id']; ?>">
             << Back </a>
-                <h1 class="text-center">Complain Form</h1>
+                <h1 class="text-center">Payment Prove</h1>
                 <br>
                 <div class="row">
                     <div class="col-lg-6 col-md-offset-3">
@@ -95,10 +90,6 @@ if (isset($_POST['btn_img'])) {
 
                             <div class="mb-3">
                                 <input type="hidden" class="form-control" name="booking_date" value="<?php echo $bookingDate; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label"> Complaint Description : </label>
-                                <textarea type="text" class="form-control" name="complain"></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label"> Upload Image : </label>

@@ -1,4 +1,6 @@
+<?php session_start(); ?>
 <?php include "config.php" ?>
+
 <br><br><br><br>
 <center>
     <h3>Processing Payment</h3>
@@ -65,16 +67,18 @@
             }
         </script>
         <br>
-        
+
         <div class="row justify-content-center">
-            <div class="col-4">
-                Total Price
-                <input type="text" name="totalprice" id="totalprice" value="<?php echo $total; ?>" class="form-control" readonly disable>
-            </div>
-            <div class="col-4">
-                Name<br>
-                <input type="text" name="buyername" required class="form-control">
-            </div>
+            <a href="view_user.php?id=<?php echo $user_id = $_SESSION['id']; ?>" style="text-decoration: none;">
+                << Back </a>
+                    <div class="col-4">
+                        Total Price
+                        <input type="text" name="totalprice" id="totalprice" value="<?php echo $total; ?>" class="form-control" readonly disable>
+                    </div>
+                    <div class="col-4">
+                        Name<br>
+                        <input type="text" name="buyername" required class="form-control">
+                    </div>
         </div>
 
         <br>
@@ -86,15 +90,19 @@
             <div class="col-4">
                 Telephone Number<br>
                 <input type="phone" name="phoneno" required class="form-control">
-            </div>            
+            </div>
         </div>
-        <br>
-        <div class="row justify-content-center">
+        <br><br>    
+        <div class="row justify-content-center text-center">
+            <p> Already Made An Payment?</p>
+            <a href="payment_prove.php">Click Here to add payment prove</a>
+        </div>
+        <div class="row justify-content-center text-center">
             <div class="col-6">
                 &nbsp;<br>
                 <button type="submit" class="btn btn-success">
                     Checkout Toyyibpay payment gateway &gt;&gt;</button>
-            </div>            
+            </div>
         </div>
     </form>
     <br><br>
